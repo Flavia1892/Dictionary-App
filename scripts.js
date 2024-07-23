@@ -9,7 +9,6 @@ let arrOfSynonyms = [];
 
 function getValueByEnter() {
   let value = "";
-
   document
     .querySelector(".form-control")
     .addEventListener("keypress", function (e) {
@@ -21,7 +20,6 @@ function getValueByEnter() {
         this.value = "";
         document.querySelector(".saveTofavorite").style.display = "block";
         saveLastSearchedWords(value);
-        let word = toString(value);
         fetchData(value);
       }
     });
@@ -47,7 +45,7 @@ function fetchData(word) {
       console.log(responseJson);
       document.querySelector(".writeWord").innerHTML = `
       <ul style="border:2px solid black">
-      <li><b>Word</b>: ${responseJson[0].word}</li>
+      <li><b>Word</b>: <h3>${responseJson[0].word}</h3></li>
       <li><b>URL:</b> ${responseJson[0].license.url} <b> Name:</b> ${
         responseJson[0].license.name
       }</li>
@@ -59,19 +57,24 @@ function fetchData(word) {
       responseJson[0].meanings[0].synonyms
     )}
     </li>
-    <li >Phonetics:<buton  type="button" style='border:3px solid blue' class='soundWord'> ${
-      responseJson[0].phonetics[1].text
-    }</button>${getSound(responseJson[0].phonetics[0].audio, "soundWord")}
-     
+    <li><b>Phonetics:</b> ${checkIfLenght(responseJson[0].phonetics)} 
+        <audio controls style='width:200px;height:30px'>
+        <source src=${checkAudio(responseJson[0].phonetics)} //[0].audio     
+     </li>
+     <li><b>Source URL:</b><a href=${responseJson[0].sourceUrls[0]}> ${
+        responseJson[0].sourceUrls[0]
+      }</a></li>
     <br>
   
    `;
     });
 }
+function checkAudio(arr) {
+  for (let key in arr) if (arr[key].audio) return arr[key].audio;
+}
 
 function goThroughArrayForDefinition(arr, areaSelector) {
   let htmlDescription = document.querySelector(areaSelector);
-
   console.log(arr);
   for (let key in arr) {
     htmlDescription += `${arr[key].definition}<br>`;
@@ -79,15 +82,11 @@ function goThroughArrayForDefinition(arr, areaSelector) {
   return htmlDescription;
 }
 
-function getSound(soundMP3, classLocation) {
-  console.log(soundMP3);
-
-  document.querySelector(`.${classLocation}`).addEventListener("click", () => {
-    let beat = new Audio(
-      "https://api.dictionaryapi.dev/media/pronunciations/en/cat-uk.mp3"
-    );
-    beat.play();
-  });
+function checkIfLenght(arr) {
+  if (arr.length > 0) {
+    console.log(arr);
+    return arr[1].text;
+  } else return ` No phonetics found found`;
 }
 
 function checkIfSynonyms(arr) {
@@ -96,6 +95,39 @@ function checkIfSynonyms(arr) {
     return arr;
   } else return ` No synonyms found`;
 }
+//Here we deal with the list of favorite words
+function loadFavoriteWords() {
+  document
+    .querySelector(".loadListOfFavorites")
+    .addEventListener("click", () => {
+      let text = `List of favorite words is:<br>`;
+      for (let i = 0; i < arrOfFavoriteWords.length; i++)
+        text += arrOfFavoriteWords[i] + "<br>";
+
+      if (text) {
+        document.querySelector(".listOfDataShow").innerHTML = text;
+        document.querySelector(
+          ".listOfDataShow"
+        ).innerHTML += `<button type='button' id='delete'>Delete list</button>`;
+        document.querySelector(
+          ".listOfDataShow"
+        ).innerHTML += `<br><button type='button' id='close' style='margin-top:30px'>Close list</button>`;
+
+        document.getElementById("delete").addEventListener("click", () => {
+          document.querySelector(".listOfDataShow").innerHTML = "";
+          arrOfFavoriteWords = [];
+        });
+        document.getElementById("close").addEventListener("click", () => {
+          document.querySelector(
+            ".listOfDataShow"
+          ).innerHTML = ` Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+              aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+              quis voluptas, facere repellat dolorum id nam doloremque quidem
+              porro quaerat?`;
+        });
+      } else alert("No saved data to show");
+    });
+}
 
 //Stuff that runs automatically
 getValueByEnter();
@@ -103,17 +135,11 @@ document.querySelector(".saveTofavorite").addEventListener("click", () => {
   arrOfFavoriteWords[counter] = favWord;
   counter++;
   console.log(arrOfFavoriteWords);
+  alert("Word has been saved to favorites list");
 });
 
 document.querySelector(".saveTofavorite").style.display = "none";
-
-document.querySelector(".loadListOfFavorites").addEventListener("click", () => {
-  let text = "";
-  for (let i = 0; i < arrOfFavoriteWords.length; i++)
-    text += arrOfFavoriteWords[i] + "<br>";
-
-  document.querySelector(".listOfDataShow").innerHTML = text;
-});
+loadFavoriteWords();
 
 document.querySelector(".lastSearched").addEventListener("click", () => {
   if (lastSearchedWords.length < 4) {
@@ -128,4 +154,16 @@ document.querySelector(".lastSearched").addEventListener("click", () => {
   ).innerHTML = `<ul>Last searched words are: <li>${localStorage.getItem(
     "wordsDataFromUser"
   )}</li></ul>`;
+  document.querySelector(
+    ".listOfDataShow"
+  ).innerHTML += `<button type='button' id='close-lastsearch'>Close</button>`;
+
+  document.getElementById("close-lastsearch").addEventListener("click", () => {
+    document.querySelector(
+      ".listOfDataShow"
+    ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+              aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+              quis voluptas, facere repellat dolorum id nam doloremque quidem
+              porro quaerat?`;
+  });
 });
