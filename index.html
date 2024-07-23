@@ -63,27 +63,43 @@
         padding-top: 50px;
         padding-bottom: 50px;
       }
-      .card {
+      .card-div {
         flex: 2;
+      }
+      .card {
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
         justify-content: center;
-        row-gap: 30px;
         width: 450px;
         box-shadow: 0 15px 25px rgba(129, 124, 124, 0.2);
-        height: 400px;
+        height: 600px;
         border-radius: 5px;
         backdrop-filter: blur(14px);
         background-color: rgba(255, 255, 255, 0.2);
         padding: 10px;
         text-align: center;
       }
-      .listOfButtons{
+      .listOfButtons {
         flex: 1;
       }
-      .listOfDataShow{
+      .listOfDataShow {
         flex: 1;
+      }
+      .writeWord {
+        display: flex;
+        flex-wrap: wrap;
+        height: 450px;
+        width: 400px;
+        overflow-y: auto;
+      }
+      .form-group {
+        height: 50px;
+      }
+      #synonymeZone{
+        display: flex;
+        flex-wrap: wrap;
+        
       }
     </style>
 
@@ -92,32 +108,42 @@
     </section>
     <body>
       <div class="container">
-        <div class="card">
-          <div class="form-group">
-            <label for="exampleInputEmail1">Search word here</label>
-            <input
-              type="text"
-              class="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Please write word here."
-            />
-          </div>
-        </div>
-
         <div class="listOfButtons">
-          <ul style="list-style-type: none;">
-            <li style="padding-bottom: 30px;">
-              <button type="button" class="saveTofavorite">Save to Favorites</button>
+          <ul style="list-style-type: none">
+            <li style="padding-bottom: 30px">
+              <button type="button" class="saveTofavorite">
+                Save to Favorites
+              </button>
             </li>
-            <li style="padding-bottom: 30px;">
-              <button type="button" class="lastSearched">Load last searched words</button>
+            <li style="padding-bottom: 30px">
+              <button type="button" class="lastSearched">
+                Load last searched words
+              </button>
             </li>
-            <li style="padding-bottom: 30px;">
-              <button type="button" class="loadListOfFavorites">Load Favorite Words</button>
+            <li style="padding-bottom: 30px">
+              <button type="button" class="loadListOfFavorites">
+                Load Favorite Words
+              </button>
             </li>
           </ul>
         </div>
+
+        <div class="card-div">
+          <div class="card">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Search word here</label>
+              <input
+                type="text"
+                class="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                placeholder="Please write word here."
+              />
+            </div>
+            <div class="writeWord"></div>
+          </div>
+        </div>
+
         <div class="listOfDataShow">
           <p>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
@@ -128,24 +154,24 @@
         </div>
       </div>
 
+      <footer class="bg-body-tertiary text-center" style="margin-top: 5px">
+        <!-- Grid container -->
 
-      <footer class="bg-body-tertiary text-center" style="margin-top: 205px;">
         <!-- Grid container -->
-  
-        <!-- Grid container -->
-  
+
         <!-- Copyright -->
         <div
           class="text-center p-3"
           style="background-color: rgba(0, 0, 0, 0.05)"
         >
           © 2024 Copyright:
-          <a class="text-body" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+          <a class="text-body" href="https://mdbootstrap.com/"
+            >MDBootstrap.com</a
+          >
         </div>
         <!-- Copyright -->
       </footer>
     </body>
-   
 
     <script src="scripts.js"></script>
   </html>

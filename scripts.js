@@ -5,6 +5,7 @@ counter2 = 0;
 lengthOfSavedData = 0;
 let favWord = "";
 let lastSearchedWords = [];
+let arrOfSynonyms = [];
 
 function getValueByEnter() {
   let value = "";
@@ -20,6 +21,8 @@ function getValueByEnter() {
         this.value = "";
         document.querySelector(".saveTofavorite").style.display = "block";
         saveLastSearchedWords(value);
+        let word = toString(value);
+        fetchData(value);
       }
     });
 }
@@ -35,6 +38,63 @@ function saveLastSearchedWords(dataFromUser) {
   }
 
   if (!dataFromUser) alert("No data input and to save");
+}
+
+function fetchData(word) {
+  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      document.querySelector(".writeWord").innerHTML = `
+      <ul style="border:2px solid black">
+      <li><b>Word</b>: ${responseJson[0].word}</li>
+      <li><b>URL:</b> ${responseJson[0].license.url} <b> Name:</b> ${
+        responseJson[0].license.name
+      }</li>
+      <li id="definition"><b>Definitions:</b> ${goThroughArrayForDefinition(
+        responseJson[0].meanings[0].definitions,
+        "#definition"
+      )}
+    <li id="synonymeZone"> <b> Synonyms:</b> ${checkIfSynonyms(
+      responseJson[0].meanings[0].synonyms
+    )}
+    </li>
+    <li >Phonetics:<buton  type="button" style='border:3px solid blue' class='soundWord'> ${
+      responseJson[0].phonetics[1].text
+    }</button>${getSound(responseJson[0].phonetics[0].audio, "soundWord")}
+     
+    <br>
+  
+   `;
+    });
+}
+
+function goThroughArrayForDefinition(arr, areaSelector) {
+  let htmlDescription = document.querySelector(areaSelector);
+
+  console.log(arr);
+  for (let key in arr) {
+    htmlDescription += `${arr[key].definition}<br>`;
+  }
+  return htmlDescription;
+}
+
+function getSound(soundMP3, classLocation) {
+  console.log(soundMP3);
+
+  document.querySelector(`.${classLocation}`).addEventListener("click", () => {
+    let beat = new Audio(
+      "https://api.dictionaryapi.dev/media/pronunciations/en/cat-uk.mp3"
+    );
+    beat.play();
+  });
+}
+
+function checkIfSynonyms(arr) {
+  if (arr.length > 0) {
+    console.log(arr);
+    return arr;
+  } else return ` No synonyms found`;
 }
 
 //Stuff that runs automatically
