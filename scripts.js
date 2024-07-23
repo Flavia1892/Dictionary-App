@@ -6,6 +6,7 @@ lengthOfSavedData = 0;
 let favWord = "";
 let lastSearchedWords = [];
 let arrOfSynonyms = [];
+let checkIfClick = 0;
 
 function getValueByEnter() {
   let value = "";
@@ -20,6 +21,8 @@ function getValueByEnter() {
         this.value = "";
         document.querySelector(".saveTofavorite").style.display = "block";
         saveLastSearchedWords(value);
+        if (checkIfClick === 1) renderHtmlListLastSavedWords();
+
         fetchData(value);
       }
     });
@@ -84,8 +87,9 @@ function goThroughArrayForDefinition(arr, areaSelector) {
 
 function checkIfLenght(arr) {
   if (arr.length > 0) {
-    console.log(arr);
-    return arr[1].text;
+    for (let key in arr) if (arr[key].text) return arr[key].text;
+    // console.log(arr);
+    // return arr[1].text;
   } else return ` No phonetics found found`;
 }
 
@@ -100,21 +104,23 @@ function loadFavoriteWords() {
   document
     .querySelector(".loadListOfFavorites")
     .addEventListener("click", () => {
-      let text = `List of favorite words is:<br>`;
-      for (let i = 0; i < arrOfFavoriteWords.length; i++)
-        text += arrOfFavoriteWords[i] + "<br>";
-
-      if (text) {
-        document.querySelector(".listOfDataShow").innerHTML = text;
+      try {
+        if (!localStorage.getItem(`favoriteWordsFromUser`))
+          throw "No saved data to show";
         document.querySelector(
           ".listOfDataShow"
-        ).innerHTML += `<button type='button' id='delete'>Delete list</button>`;
+        ).innerHTML = `List of favorite words is:<br>
+          ${localStorage.getItem(`favoriteWordsFromUser`)}`;
+        document.querySelector(
+          ".listOfDataShow"
+        ).innerHTML += `<br><button type='button' id='delete'>Delete list</button>`;
         document.querySelector(
           ".listOfDataShow"
         ).innerHTML += `<br><button type='button' id='close' style='margin-top:30px'>Close list</button>`;
 
         document.getElementById("delete").addEventListener("click", () => {
           document.querySelector(".listOfDataShow").innerHTML = "";
+          localStorage.clear();
           arrOfFavoriteWords = [];
         });
         document.getElementById("close").addEventListener("click", () => {
@@ -125,23 +131,51 @@ function loadFavoriteWords() {
               quis voluptas, facere repellat dolorum id nam doloremque quidem
               porro quaerat?`;
         });
-      } else alert("No saved data to show");
+      } catch (err) {
+        alert("No saved data to show");
+      }
     });
 }
+function loadLastSavedWords() {
+  document.querySelector(".lastSearched").addEventListener("click", () => {
+    try {
+      if (lastSearchedWords.length === 0) throw "No prior search found";
+      if (lastSearchedWords.length < 4) {
+        checkIfClick = 1;
+        let copy = lastSearchedWords.reverse();
+        lastSearchedWords = copy;
+        copy = [];
+        localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
+      } else localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
+      console.log(localStorage.getItem(`wordsDataFromUser`));
+      document.querySelector(
+        ".listOfDataShow"
+      ).innerHTML = `<ul>Last searched words are: <li>${localStorage.getItem(
+        "wordsDataFromUser"
+      )}</li></ul>`;
+      document.querySelector(
+        ".listOfDataShow"
+      ).innerHTML += `<button type='button' id='close-lastsearch'>Close</button>`;
 
-//Stuff that runs automatically
-getValueByEnter();
-document.querySelector(".saveTofavorite").addEventListener("click", () => {
-  arrOfFavoriteWords[counter] = favWord;
-  counter++;
-  console.log(arrOfFavoriteWords);
-  alert("Word has been saved to favorites list");
-});
-
-document.querySelector(".saveTofavorite").style.display = "none";
-loadFavoriteWords();
-
-document.querySelector(".lastSearched").addEventListener("click", () => {
+      document
+        .getElementById("close-lastsearch")
+        .addEventListener("click", () => {
+          document.querySelector(
+            ".listOfDataShow"
+          ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+                aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+                quis voluptas, facere repellat dolorum id nam doloremque quidem
+                porro quaerat?`;
+          checkIfClick = 0;
+          console.log(checkIfClick);
+        });
+    } catch (err) {
+      alert(err);
+    }
+  });
+}
+function renderHtmlListLastSavedWords() {
+  if (lastSearchedWords.length === 0) throw "No prior search found";
   if (lastSearchedWords.length < 4) {
     let copy = lastSearchedWords.reverse();
     lastSearchedWords = copy;
@@ -162,8 +196,24 @@ document.querySelector(".lastSearched").addEventListener("click", () => {
     document.querySelector(
       ".listOfDataShow"
     ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
-              aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
-              quis voluptas, facere repellat dolorum id nam doloremque quidem
-              porro quaerat?`;
+            aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+            quis voluptas, facere repellat dolorum id nam doloremque quidem
+            porro quaerat?`;
   });
+}
+//Stuff that runs automatically
+getValueByEnter();
+
+//Save to favorite list
+document.querySelector(".saveTofavorite").addEventListener("click", () => {
+  arrOfFavoriteWords[counter] = favWord;
+  console.log(arrOfFavoriteWords);
+  localStorage.setItem(`favoriteWordsFromUser`, arrOfFavoriteWords);
+  counter++;
+  console.log(arrOfFavoriteWords);
+  alert("Word has been saved to favorites list");
 });
+
+document.querySelector(".saveTofavorite").style.display = "none";
+loadFavoriteWords();
+loadLastSavedWords();
