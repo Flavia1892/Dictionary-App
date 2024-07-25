@@ -30,11 +30,31 @@ function getValueByEnter() {
         this.value = "";
         document.querySelector(".saveTofavorite").style.display = "block";
         saveLastSearchedWords(value);
-        if (checkIfClick === 1) renderHtmlListLastSavedWords();
+        checkIfClick = 0;
+        checkIfClick2 = 0;
+        document.querySelector(
+          ".listOfDataShow"
+        ).innerHTML = `<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+              aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+              quis voluptas, facere repellat dolorum id nam doloremque quidem
+              porro quaerat?</p>`;
 
-        fetchData(value);
+        document.querySelector(".writeWord").innerHTML = `<h1>Loading...</h1>`;
+        setTimeout(fetchData(value), 4000);
       }
     });
+}
+function saveLastSearchedWords(dataFromUser) {
+  if (lastSearchedWords.length < 4 && dataFromUser) {
+    lastSearchedWords.unshift(dataFromUser);
+  } else {
+    if (lastSearchedWords.length === 4 && dataFromUser) {
+      lastSearchedWords.pop();
+      lastSearchedWords.unshift(dataFromUser);
+    }
+  }
+
+  if (!dataFromUser) alert("No data input and to save");
 }
 function loadLastSavedWords() {
   document.querySelector(".lastSearched").addEventListener("click", () => {
@@ -68,16 +88,17 @@ function loadLastSavedWords() {
           );
           document.querySelector(
             ".listOfDataShow"
-          ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+          ).innerHTML = `<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
                 aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
                 quis voluptas, facere repellat dolorum id nam doloremque quidem
-                porro quaerat?`;
+                porro quaerat?</p>`;
         });
     } catch (err) {
       alert(err);
     }
   });
 }
+
 function renderHtmlListLastSavedWords() {
   if (lastSearchedWords.length === 0) throw "No prior search found";
   if (lastSearchedWords.length < 4) {
@@ -104,20 +125,6 @@ function renderHtmlListLastSavedWords() {
             quis voluptas, facere repellat dolorum id nam doloremque quidem
             porro quaerat?`;
   });
-}
-
-function saveLastSearchedWords(dataFromUser) {
-  if (lastSearchedWords.length < 4 && dataFromUser) {
-    lastSearchedWords.unshift(dataFromUser);
-  } else {
-    if (lastSearchedWords.length === 4 && dataFromUser) {
-      lastSearchedWords.pop();
-      lastSearchedWords.unshift(dataFromUser);
-    }
-    if (checkIfClick === 1) renderHtmlListLastSavedWords();
-  }
-
-  if (!dataFromUser) alert("No data input and to save");
 }
 
 function fetchData(word) {
@@ -171,8 +178,6 @@ function goThroughArrayForDefinition(arr) {
 function checkIfLenght(arr) {
   if (arr.length > 0) {
     for (let key in arr) if (arr[key].text) return arr[key].text;
-    // console.log(arr);
-    // return arr[1].text;
   } else return ` No phonetics found found`;
 }
 
@@ -193,13 +198,14 @@ function saveToFavoriteWords() {
               quis voluptas, facere repellat dolorum id nam doloremque quidem
               porro quaerat?</p>`;
     checkIfClick = 0;
-    // arrOfFavoriteWords[counter] = favWord;
+    checkIfClick2 = 0;
+
     console.log(arrOfFavoriteWords);
     localStorage.setItem(`favoriteWordsFromUser`, arrOfFavoriteWords);
     counter++;
-    // console.log(arrOfFavoriteWords);
+
     console.log(localStorage.getItem(`favoriteWordsFromUser`));
-    if (checkIfClick2 === 1) renderFavoriteWordsList();
+
     alert("Word has been saved to favorites list");
   });
 }
@@ -239,47 +245,31 @@ function loadFavoriteWords() {
           localStorage.clear();
           arrOfFavoriteWords = [];
           checkIfClick2 = 0;
+          document.querySelector(
+            ".listOfDataShow"
+          ).innerHTML = `<p style='border: 2px solid black; font-size:20px;background-color:green; text-align:center'>Successfuly deleted</p>`;
+          setTimeout(() => {
+            document.querySelector(
+              ".listOfDataShow"
+            ).innerHTML = `<p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+                aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+                quis voluptas, facere repellat dolorum id nam doloremque quidem
+                porro quaerat?</p>`;
+          }, 1500);
         });
         document.getElementById("close").addEventListener("click", () => {
           checkIfClick2 = 0;
           document.querySelector(
             ".listOfDataShow"
-          ).innerHTML = ` Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+          ).innerHTML = `<p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
               aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
               quis voluptas, facere repellat dolorum id nam doloremque quidem
-              porro quaerat?`;
+              porro quaerat?</p>`;
         });
       } catch (err) {
         alert("No saved data to show");
       }
     });
-}
-function renderFavoriteWordsList() {
-  let text = document.querySelector(".listOfDataShow");
-  text.innerHTML = `List of favorite words is:<ul>`;
-  showFavoriteWords(text);
-  `</ul>`;
-
-  document.querySelector(
-    ".listOfDataShow"
-  ).innerHTML += `<br><button type='button' id='delete'>Delete list</button>`;
-  document.querySelector(
-    ".listOfDataShow"
-  ).innerHTML += `<br><button type='button' id='close' style='margin-top:30px'>Close list</button>`;
-
-  document.getElementById("delete").addEventListener("click", () => {
-    document.querySelector(".listOfDataShow").innerHTML = "";
-    localStorage.clear();
-    arrOfFavoriteWords = [];
-  });
-  document.getElementById("close").addEventListener("click", () => {
-    document.querySelector(
-      ".listOfDataShow"
-    ).innerHTML = ` Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
-        aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
-        quis voluptas, facere repellat dolorum id nam doloremque quidem
-        porro quaerat?`;
-  });
 }
 
 //Stuff that runs automatically
