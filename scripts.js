@@ -11,11 +11,11 @@ let checkIfClick2 = 0;
 
 function myFunction() {
   let words = localStorage.getItem(`favoriteWordsFromUser`);
-    let arrayofWords = [];
-    if (words) {
-      arrayofWords = localStorage.getItem(`favoriteWordsFromUser`).split(",");
-      for (let word of arrayofWords) arrOfFavoriteWords.push(word);
-    }
+  let arrayofWords = [];
+  if (words) {
+    arrayofWords = localStorage.getItem(`favoriteWordsFromUser`).split(",");
+    for (let word of arrayofWords) arrOfFavoriteWords.push(word);
+  }
 }
 function getValueByEnter() {
   let value = "";
@@ -54,13 +54,15 @@ function fetchData(word) {
   fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
     .then((response) => response.json())
     .then((responseJson) => {
-      console.log(responseJson);
-      document.querySelector(".writeWord").innerHTML = `
+      try {
+        if (!responseJson[0].word) throw "No results found";
+        console.log(responseJson);
+        document.querySelector(".writeWord").innerHTML = `
       <ul style="border:2px solid black">
       <li><b>Word</b>: <h3>${responseJson[0].word}</h3></li>
       <li><b>URL:</b> ${responseJson[0].license.url} <b> Name:</b> ${
-        responseJson[0].license.name
-      }</li>
+          responseJson[0].license.name
+        }</li>
       <li id="definition"><b>Definitions:</b> ${goThroughArrayForDefinition(
         responseJson[0].meanings[0].definitions
       )}
@@ -73,11 +75,14 @@ function fetchData(word) {
         <source src=${checkAudio(responseJson[0].phonetics)} //[0].audio     
      </li>
      <li><b>Source URL:</b><a href=${responseJson[0].sourceUrls[0]}> ${
-        responseJson[0].sourceUrls[0]
-      }</a></li>
+          responseJson[0].sourceUrls[0]
+        }</a></li>
     <br>
   
    `;
+      } catch (err) {
+        alert(err);
+      }
     });
 }
 function checkAudio(arr) {
@@ -139,6 +144,7 @@ function loadFavoriteWords() {
         if (!localStorage.getItem(`favoriteWordsFromUser`))
           throw "No saved data to show";
         checkIfClick2 = 1;
+        checkIfClick = 0;
         let text = document.querySelector(".listOfDataShow");
         text.innerHTML = `List of favorite words is:<ul>`;
         showFavoriteWords(text);
@@ -204,6 +210,7 @@ function loadLastSavedWords() {
       if (lastSearchedWords.length === 0) throw "No prior search found";
       if (lastSearchedWords.length < 4) {
         checkIfClick = 1;
+        renderHtmlListLastSavedWords();
         let copy = lastSearchedWords.reverse();
         lastSearchedWords = copy;
         copy = [];
@@ -222,14 +229,16 @@ function loadLastSavedWords() {
       document
         .getElementById("close-lastsearch")
         .addEventListener("click", () => {
+          checkIfClick = 0;
+          console.log(
+            `This is the closing of last search list ${checkIfClick}`
+          );
           document.querySelector(
             ".listOfDataShow"
           ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
                 aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
                 quis voluptas, facere repellat dolorum id nam doloremque quidem
                 porro quaerat?`;
-          checkIfClick = 0;
-          console.log(checkIfClick);
         });
     } catch (err) {
       alert(err);
