@@ -36,6 +36,75 @@ function getValueByEnter() {
       }
     });
 }
+function loadLastSavedWords() {
+  document.querySelector(".lastSearched").addEventListener("click", () => {
+    try {
+      if (lastSearchedWords.length === 0) throw "No prior search found";
+      if (lastSearchedWords.length < 4) {
+        checkIfClick = 1;
+        checkIfClick2 = 0;
+        renderHtmlListLastSavedWords();
+        let copy = lastSearchedWords.reverse();
+        lastSearchedWords = copy;
+        copy = [];
+        localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
+      } else localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
+      console.log(localStorage.getItem(`wordsDataFromUser`));
+      document.querySelector(
+        ".listOfDataShow"
+      ).innerHTML = `<ul>Last searched words are: <li>${localStorage.getItem(
+        "wordsDataFromUser"
+      )}</li></ul>`;
+      document.querySelector(
+        ".listOfDataShow"
+      ).innerHTML += `<button type='button' id='close-lastsearch'>Close</button>`;
+
+      document
+        .getElementById("close-lastsearch")
+        .addEventListener("click", () => {
+          checkIfClick = 0;
+          console.log(
+            `This is the closing of last search list ${checkIfClick}`
+          );
+          document.querySelector(
+            ".listOfDataShow"
+          ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+                aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+                quis voluptas, facere repellat dolorum id nam doloremque quidem
+                porro quaerat?`;
+        });
+    } catch (err) {
+      alert(err);
+    }
+  });
+}
+function renderHtmlListLastSavedWords() {
+  if (lastSearchedWords.length === 0) throw "No prior search found";
+  if (lastSearchedWords.length < 4) {
+    let copy = lastSearchedWords.reverse();
+    lastSearchedWords = copy;
+    copy = [];
+    localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
+  } else localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
+  console.log(localStorage.getItem(`wordsDataFromUser`));
+  document.querySelector(
+    ".listOfDataShow"
+  ).innerHTML = `<ul>Last searched words are: <li>${localStorage.getItem(
+    "wordsDataFromUser"
+  )}</li></ul>`;
+  document.querySelector(
+    ".listOfDataShow"
+  ).innerHTML += `<button type='button' id='close-lastsearch'>Close</button>`;
+
+  document.getElementById("close-lastsearch").addEventListener("click", () => {
+    document.querySelector(
+      ".listOfDataShow"
+    ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+            aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+            quis voluptas, facere repellat dolorum id nam doloremque quidem
+            porro quaerat?`;
+  });
+}
 
 function saveLastSearchedWords(dataFromUser) {
   if (lastSearchedWords.length < 4 && dataFromUser) {
@@ -45,6 +114,7 @@ function saveLastSearchedWords(dataFromUser) {
       lastSearchedWords.pop();
       lastSearchedWords.unshift(dataFromUser);
     }
+    if (checkIfClick === 1) renderHtmlListLastSavedWords();
   }
 
   if (!dataFromUser) alert("No data input and to save");
@@ -116,6 +186,13 @@ function checkIfSynonyms(arr) {
 function saveToFavoriteWords() {
   document.querySelector(".saveTofavorite").addEventListener("click", () => {
     arrOfFavoriteWords.push(favWord);
+    document.querySelector(
+      ".listOfDataShow"
+    ).innerHTML = `<p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+              aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+              quis voluptas, facere repellat dolorum id nam doloremque quidem
+              porro quaerat?</p>`;
+    checkIfClick = 0;
     // arrOfFavoriteWords[counter] = favWord;
     console.log(arrOfFavoriteWords);
     localStorage.setItem(`favoriteWordsFromUser`, arrOfFavoriteWords);
@@ -204,74 +281,7 @@ function renderFavoriteWordsList() {
         porro quaerat?`;
   });
 }
-function loadLastSavedWords() {
-  document.querySelector(".lastSearched").addEventListener("click", () => {
-    try {
-      if (lastSearchedWords.length === 0) throw "No prior search found";
-      if (lastSearchedWords.length < 4) {
-        checkIfClick = 1;
-        renderHtmlListLastSavedWords();
-        let copy = lastSearchedWords.reverse();
-        lastSearchedWords = copy;
-        copy = [];
-        localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
-      } else localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
-      console.log(localStorage.getItem(`wordsDataFromUser`));
-      document.querySelector(
-        ".listOfDataShow"
-      ).innerHTML = `<ul>Last searched words are: <li>${localStorage.getItem(
-        "wordsDataFromUser"
-      )}</li></ul>`;
-      document.querySelector(
-        ".listOfDataShow"
-      ).innerHTML += `<button type='button' id='close-lastsearch'>Close</button>`;
 
-      document
-        .getElementById("close-lastsearch")
-        .addEventListener("click", () => {
-          checkIfClick = 0;
-          console.log(
-            `This is the closing of last search list ${checkIfClick}`
-          );
-          document.querySelector(
-            ".listOfDataShow"
-          ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
-                aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
-                quis voluptas, facere repellat dolorum id nam doloremque quidem
-                porro quaerat?`;
-        });
-    } catch (err) {
-      alert(err);
-    }
-  });
-}
-function renderHtmlListLastSavedWords() {
-  if (lastSearchedWords.length === 0) throw "No prior search found";
-  if (lastSearchedWords.length < 4) {
-    let copy = lastSearchedWords.reverse();
-    lastSearchedWords = copy;
-    copy = [];
-    localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
-  } else localStorage.setItem(`wordsDataFromUser`, lastSearchedWords);
-  console.log(localStorage.getItem(`wordsDataFromUser`));
-  document.querySelector(
-    ".listOfDataShow"
-  ).innerHTML = `<ul>Last searched words are: <li>${localStorage.getItem(
-    "wordsDataFromUser"
-  )}</li></ul>`;
-  document.querySelector(
-    ".listOfDataShow"
-  ).innerHTML += `<button type='button' id='close-lastsearch'>Close</button>`;
-
-  document.getElementById("close-lastsearch").addEventListener("click", () => {
-    document.querySelector(
-      ".listOfDataShow"
-    ).innerHTML = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
-            aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
-            quis voluptas, facere repellat dolorum id nam doloremque quidem
-            porro quaerat?`;
-  });
-}
 //Stuff that runs automatically
 getValueByEnter();
 
