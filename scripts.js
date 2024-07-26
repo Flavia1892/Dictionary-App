@@ -245,6 +245,7 @@ function loadFavoriteWords() {
         for (let i = 1; i <= arrOfFavoriteWords.length; i++) {
           document.querySelector(`.word${i}`).addEventListener("click", () => {
             fetchData(arrOfFavoriteWords[i - 1]);
+            saveLastSearchedWords(arrOfFavoriteWords[i-1]);
           });
         }
 
