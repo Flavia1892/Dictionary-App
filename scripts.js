@@ -246,6 +246,12 @@ function loadFavoriteWords() {
           document.querySelector(`.word${i}`).addEventListener("click", () => {
             fetchData(arrOfFavoriteWords[i - 1]);
             saveLastSearchedWords(arrOfFavoriteWords[i-1]);
+            document.querySelector(
+              ".listOfDataShow"
+            ).innerHTML = `<p> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+                aliquam cum similique nam enim ipsam voluptas! Nihil pariatur eaque
+                quis voluptas, facere repellat dolorum id nam doloremque quidem
+                porro quaerat?</p>`;
           });
         }
 
