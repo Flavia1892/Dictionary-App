@@ -40,7 +40,7 @@ function getValueByEnter() {
               porro quaerat?</p>`;
 
         document.querySelector(".writeWord").innerHTML = `<h1>Loading...</h1>`;
-        setTimeout(fetchData(value), 4000);
+        fetchData(value);
       }
     });
 }
@@ -212,9 +212,11 @@ function saveToFavoriteWords() {
 
 function showFavoriteWords(textlocation) {
   let arrayofWords = localStorage.getItem(`favoriteWordsFromUser`).split(",");
+  let num = 1;
   arrayofWords.forEach((word) => {
-    console.log(word);
-    textlocation.innerHTML += `<li class='searchWord'>${word}</li>`;
+    //console.log(word);
+    textlocation.innerHTML += `<li class='searchWord' >${word} <button type='button'class='word${num}'>Search word</button></li>`;
+    num++;
   });
   return textlocation;
 }
@@ -239,6 +241,12 @@ function loadFavoriteWords() {
         document.querySelector(
           ".listOfDataShow"
         ).innerHTML += `<br><button type='button' id='close' style='margin-top:30px'>Close list</button>`;
+
+        for (let i = 1; i <= arrOfFavoriteWords.length; i++) {
+          document.querySelector(`.word${i}`).addEventListener("click", () => {
+            fetchData(arrOfFavoriteWords[i - 1]);
+          });
+        }
 
         document.getElementById("delete").addEventListener("click", () => {
           document.querySelector(".listOfDataShow").innerHTML = "";
